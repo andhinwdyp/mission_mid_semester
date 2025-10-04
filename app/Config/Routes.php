@@ -32,6 +32,13 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes){
     $routes->get('komponen/edit/(:num)', 'Admin\Komponen::edit/$1');
     $routes->post('komponen/update/(:num)', 'Admin\Komponen::update/$1');
     $routes->get('komponen/delete/(:num)', 'Admin\Komponen::delete/$1');
+
+    $routes->get('penggajian', 'Admin\Penggajian::index');
+    $routes->get('penggajian/create', 'Admin\Penggajian::create');
+    $routes->post('penggajian/store', 'Admin\Penggajian::store');
+    $routes->get('penggajian/edit/(:num)', 'Admin\Penggajian::edit/$1');
+    $routes->post('penggajian/update/(:num)', 'Admin\Penggajian::update/$1');
+    $routes->get('penggajian/delete/(:num)', 'Admin\Penggajian::delete/$1');
 });
 
 $routes->group('public', ['filter' => 'auth:public'], function ($routes) {
