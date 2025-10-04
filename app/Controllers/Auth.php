@@ -8,7 +8,7 @@ class Auth extends Controller
     public function login()
     {
         echo view('layout/header');
-        echo view('login');
+        echo view('auth/login');
         echo view('layout/footer');
     }
 
@@ -16,35 +16,36 @@ class Auth extends Controller
     {
         $session = session();
         $model = new UserModel();
-        $username = $this->request->getVar('username');
+        $email = $this->request->getVar('email');
         $password = $this->request->getVar('password');
-        $data = $model->where('username', $username)->first();
-        if($data){
+        
+        $data = $model->where('email', $email)->first();
+        if ($data) {
             $pass = $data['password'];
             $verify_pass = password_verify($password, $pass);
-            if($verify_pass){
+            if ($verify_pass) {
                 $ses_data = [
-                    'id_pengguna'       => $data['id_pengguna'],
-                    'username'     => $data['username'],
-                    'email'    => $data['email'],
-                    'role'    => $data['role'],
+                    'id_pengguna'   => $data['id_pengguna'],
+                    'username'      => $data['username'],
+                    'email'         => $data['email'],
+                    'role'          => $data['role'],
                     'nama_depan'    => $data['nama_depan'],
-                    'nama_belakang'    => $data['nama_belakang'],
-                    'logged_in'     => TRUE
+                    'nama_belakang' => $data['nama_belakang'],
+                    'isLoggedIn'    => TRUE
                 ];
                 $session->set($ses_data);
-                if($data['role'] == 'admin'){
-                    return redirect()->to('/admin/dashboard');
-                }else{
-                    return redirect()->to('/user/dashboard');
-                }
 
-            }else{
-                $session->setFlashdata('msg', 'Wrong Password');
+                if ($data['role'] == 'admin') {
+                    return redirect()->to('/admin/dashboard');
+                } else {
+                    return redirect()->to('/public/dashboard');
+                }
+            } else {
+                $session->setFlashdata('error', 'Password salah');
                 return redirect()->to('/login');
             }
-        }else{
-            $session->setFlashdata('msg', 'Username not Found');
+        } else {
+            $session->setFlashdata('error', 'Email tidak ditemukan');
             return redirect()->to('/login');
         }
     }
