@@ -12,21 +12,21 @@ $routes->get('/login', 'Auth::login');
 $routes->post('/loginAuth', 'Auth::loginAuth');
 $routes->get('/logout', 'Auth::logout');
 
-$routes->get('/no-access', function() {
-    echo view('layout/header');
-    echo view('errors/no_access');
-    echo view('layout/footer');
+$routes->get('/no-access', 'Auth::noAccess');
+
+$routes->get('/admin/dashboard', 'Admin\Dashboard::index', ['filter' => 'auth:admin']);
+
+$routes->get('/public/dashboard', 'Public\Dashboard::index', ['filter' => 'auth:public']);
+
+$routes->group('admin', ['filter' => 'auth:admin'], function($routes){
+    $routes->get('anggota', 'Admin\Anggota::index');
+    $routes->get('anggota/create', 'Admin\Anggota::create');
+    $routes->post('anggota/store', 'Admin\Anggota::store');
+    $routes->get('anggota/edit/(:num)', 'Admin\Anggota::edit/$1');
+    $routes->post('anggota/update/(:num)', 'Admin\Anggota::update/$1');
+    $routes->get('anggota/delete/(:num)', 'Admin\Anggota::delete/$1');
 });
 
-$routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
-    $routes->get('dashboard', 'Admin\Dashboard::index');
-    $routes->resource('anggota');
-    $routes->resource('komponen');
-    $routes->resource('penggajian');
-});
-
-$routes->group('public', function($routes) {
+$routes->group('public', ['filter' => 'auth:public'], function ($routes) {
     $routes->get('dashboard', 'Public\Dashboard::index');
-    $routes->get('anggota', 'Public\Anggota::index');
-    $routes->get('penggajian', 'Public\Penggajian::index');
 });
